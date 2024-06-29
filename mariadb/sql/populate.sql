@@ -1,0 +1,105 @@
+CREATE TABLE IF NOT EXISTS Users (
+                                     id int NOT NULL AUTO_INCREMENT,
+                                     name varchar(32) NOT NULL,
+    password varchar(32) NOT NULL,
+    PRIMARY KEY (id)
+    );
+
+CREATE TABLE IF NOT EXISTS Points (
+                                      id int NOT NULL AUTO_INCREMENT,
+                                      userId int NOT NULL,
+                                      nbPoints int NOT NULL,
+                                      PRIMARY KEY (id),
+    FOREIGN KEY (userId) REFERENCES Users(id)
+    );
+
+CREATE TABLE IF NOT EXISTS Messages (
+    id int NOT NULL AUTO_INCREMENT,
+    fromUserId int NOT NULL,
+    toUserId int NOT NULL,
+    message varchar(256) NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (fromUserId) REFERENCES Users(id),
+    FOREIGN KEY (toUserId) REFERENCES Users(id)
+);
+
+INSERT INTO Users (name, password) VALUES
+                                       ('Admin', 'Admin2024!'),
+                                       ('Bob', 'Bob#Secure123'),
+                                       ('Charlie', 'Charlie!Password'),
+                                       ('David', 'David&StrongPass'),
+                                       ('Eve', 'Eve*SuperSecure'),
+                                       ('Frank', 'Frank!Password123'),
+                                       ('Grace', 'Grace@SecurePass'),
+                                       ('Hank', 'Hank#StrongPass'),
+                                       ('Ivy', 'Ivy!Secure2024'),
+                                       ('Jack', 'Jack@Password123'),
+                                       ('Karen', 'Karen&SecurePass'),
+                                       ('Leo', 'Leo!StrongPass2024'),
+                                       ('Mona', 'Mona@SecurePass'),
+                                       ('Nina', 'Nina#StrongPass'),
+                                       ('Oscar', 'Oscar!Secure123'),
+                                       ('Paul', 'Paul@StrongPass'),
+                                       ('Quincy', 'Quincy#Secure2024'),
+                                       ('Rita', 'Rita!Password123'),
+                                       ('Steve', 'Steve@StrongPass'),
+                                       ('Tina', 'Tina#SecurePass'),
+                                       ('Uma', 'Uma!Password123'),
+                                       ('Victor', 'Victor@SecurePass'),
+                                       ('Wendy', 'Wendy#StrongPass'),
+                                       ('Xander', 'Xander!Secure123'),
+                                       ('Yara', 'Yara@StrongPass2024');
+
+INSERT INTO Points (userId, nbPoints) VALUES
+                                          (1, 150),
+                                          (2, 320),
+                                          (3, 480),
+                                          (4, 230),
+                                          (5, 540),
+                                          (6, 120),
+                                          (7, 890),
+                                          (8, 310),
+                                          (9, 760),
+                                          (10, 640),
+                                          (11, 530),
+                                          (12, 210),
+                                          (13, 430),
+                                          (14, 380),
+                                          (15, 250),
+                                          (16, 970),
+                                          (17, 560),
+                                          (18, 450),
+                                          (19, 300),
+                                          (20, 650),
+                                          (21, 110),
+                                          (22, 770),
+                                          (23, 920),
+                                          (24, 280),
+                                          (25, 360);
+
+INSERT INTO Messages (fromUserId, toUserId, message) VALUES
+                                                       (2, 5, 'Salut Eve, comment ça va?'),
+                                                       (2, 8, 'Bonjour Hank, bien et toi?'),
+                                                       (3, 11, 'Salut Karen, des nouvelles?'),
+                                                       (4, 3, 'Hello Charlie, comment est ta journée?'),
+                                                       (5, 17, 'Salut Quincy, prêt pour le meeting?'),
+                                                       (6, 9, 'Bonjour Ivy, tu as fini le projet?'),
+                                                       (7, 15, 'Salut Oscar, tu viens au déjeuner?'),
+                                                       (8, 6, 'Hello Frank, as-tu vu le dernier film?'),
+                                                       (9, 19, 'Salut Steve, comment va la famille?'),
+                                                       (10, 14, 'Bonjour Nina, tu peux me rappeler?'),
+                                                       (11, 4, 'Salut David, merci pour ton aide.'),
+                                                       (12, 13, 'Bonjour Mona, on se voit ce soir?'),
+                                                       (13, 21, 'Salut Uma, as-tu reçu mon email?'),
+                                                       (14, 25, 'Bonjour Yara, besoin d’un coup de main?'),
+                                                       (15, 1, 'Salut Admin, tu es libre demain?'),
+                                                       (16, 22, 'Bonjour Victor, des plans pour ce week-end?'),
+                                                       (17, 12, 'Salut Leo, merci pour le conseil.'),
+                                                       (18, 2, 'Hello Bob, tu as des nouvelles?'),
+                                                       (19, 7, 'Salut Grace, tu viens au barbecue?'),
+                                                       (20, 24, 'Bonjour Xander, comment va le travail?'),
+                                                       (21, 10, 'Salut Jack, tu veux déjeuner ensemble?'),
+                                                       (22, 23, 'Hello Wendy, tu as vu mon message?'),
+                                                       (23, 18, 'Salut Rita, on se voit demain?'),
+                                                       (24, 16, 'Bonjour Paul, tu as fini ton rapport?'),
+                                                       (25, 20, 'Salut Tina, comment est ta journée?');

@@ -1,0 +1,42 @@
+version: '3.1'
+
+services:
+
+  routing:
+    image: owasplab-nginx
+    build: routing
+    ports:
+      - 80:80
+    volumes:
+      - ./front/src:/usr/share/nginx/html
+    links:
+      - frontend
+      - backend
+
+  frontend:
+    image: owasplab-frontend
+    build: front
+    ports:
+      - 9000:9000
+    links:
+      - backend
+
+  backend:
+    image: owasplab-backend
+    build: api
+    ports:
+      - 8080:8080
+    links:
+      - database
+
+  database:
+    image: owasplab-mariadb
+    build: mariadb
+    restart: always
+    environment:
+      - MARIADB_ROOT_PASSWORD=root_robust_password
+      - MARIADB_DATABASE=owaspLab
+      - MARIADB_USER=owaspLabUser
+      - MARIADB_PASSWORD=user_robust_password
+    ports:
+      - 3306:3306
