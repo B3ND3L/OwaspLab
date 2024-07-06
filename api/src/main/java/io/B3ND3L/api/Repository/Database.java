@@ -1,13 +1,13 @@
 package io.B3ND3L.api.Repository;
 
-import io.B3ND3L.api.Repository.Model.Message;
-import io.B3ND3L.api.Repository.Model.Points;
+import io.B3ND3L.api.Repository.Model.Game;
 import io.B3ND3L.api.Repository.Model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,38 +18,101 @@ public class Database {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    public Optional<User> getUserById(int id) {
-        String query = "SELECT * FROM users WHERE id = " + id;
-        return jdbcTemplate.query(query, (rs, rowNum) -> new User(rs.getInt("id"), rs.getString("name"), rs.getString("password"))).stream().findFirst();
-    }
 
-    public Optional<Points> getPointsByUserId(int id) throws SQLException {
-        String query = "SELECT NbPoints FROM Points WHERE UserId = '" + id + "'";
+    /****************
+     *
+     * USERS
+     *
+     ****************/
 
-        return jdbcTemplate.query(query, (rs, rowNum) -> new Points(rs.getInt("nbPoints"))).stream().findFirst();
+     public Optional<User> getUserById(int id) throws SQLException {
+        String query = "SELECT id, name FROM Users WHERE id = " + id;
+        return jdbcTemplate.query(query, (rs, rowNum) -> new User(
+                rs.getInt("id"),
+                rs.getString("name"),
+                0,
+                null)
+        ).stream().findFirst();
     }
 
     public boolean login(String username, String password) throws SQLException {
-        String query = "SELECT * FROM Users WHERE name = '" + username + "' AND password = '" + password + "'";
-        return !jdbcTemplate.query(query, (rs, rowNum) -> new User(rs.getInt("id"), rs.getString("name"), rs.getString("password"))).isEmpty();
+        String query = "SELECT id, name FROM Users WHERE name = '" + username + "' AND password = '" + password + "'";
+        return !jdbcTemplate.query(query, (rs, rowNum) -> new User(
+                rs.getInt("id"),
+                rs.getString("name"),
+                0,
+                Collections.emptyList()
+        )).isEmpty();
     }
 
-    public boolean updatePoints(Points points, int id) throws SQLException {
-        String query = "UPDATE Points SET nbPoints=" + points.nbPoints() + " WHERE userId=" + id;
+    /****************
+     *
+     * WALLETS
+     *
+     ****************/
+
+    public Optional<Integer> getUserAmount(int id) throws SQLException {
+        String query = "SELECT amount FROM Wallets WHERE UserId = '" + id + "'";
+        return jdbcTemplate.query(query, (rs, rowNum) -> rs.getInt("amount")).stream().findFirst();
+    }
+
+    /****************
+     *
+     * LIBRARIES
+     *
+     ****************/
+
+    public List<Game> getGamesByUserId(int id) {
+        String query = "SELECT * FROM Libraries JOIN Games ON Libraries.gameId = Games.id WHERE UserId = '" + id + "'";
+        return jdbcTemplate.query(query, (rs, rowNum) -> new Game(
+                rs.getInt("Games.id"),
+                rs.getString("name"),
+                rs.getInt("price"))
+        ).stream().toList();
+    }
+
+
+    public boolean updateWallet(int id, int amount) throws SQLException {
+        String query = "UPDATE Wallets SET amount=" + amount + " WHERE userId=" + id;
         return jdbcTemplate.update(query) == 1;
     }
 
-    public boolean addPoints(int id, int nbPoints) throws SQLException {
-        Optional<Points> optionalPoints = getPointsByUserId(id);
-        if (optionalPoints.isPresent()) {
-            Points points = optionalPoints.get();
+    /****************
+     *
+     * GAMES
+     *
+     ****************/
 
-            Points newPoints = new Points(points.nbPoints() + nbPoints);
-            return updatePoints(newPoints, id);
-        }
-        return false;
+    public List<Game> getGames(int limit) throws SQLException {
+        String query = "SELECT * FROM Games LIMIT " + limit;
+        return jdbcTemplate.query(query, (rs, rowNum) -> new Game(
+                rs.getInt("id"),
+                rs.getString("name"),
+                rs.getInt("price"))
+        ).stream().toList();
     }
 
+    public List<Game> getGames() throws SQLException {
+        String query = "SELECT * FROM Games";
+        return jdbcTemplate.query(query, (rs, rowNum) -> new Game(
+                rs.getInt("id"),
+                rs.getString("name"),
+                rs.getInt("price"))
+        ).stream().toList();
+    }
+
+    public Optional<Game> getGameById(int id) {
+        String query = "SELECT * FROM Games WHERE id = '" + id + "'";
+        return jdbcTemplate.query(query, (rs, rowNum) -> new Game(
+                rs.getInt("id"),
+                rs.getString("name"),
+                rs.getInt("price"))
+        ).stream().findFirst();
+    }
+
+
+
+/*
     public Optional<List<Message>> getMessagesByFromUserId(int id) throws SQLException {
         String query = "SELECT * FROM messages WHERE fromUserId = " + id;
         return Optional.of(jdbcTemplate.query(query, (rs, rowNum) -> new Message(rs.getInt("id"), rs.getInt("fromUserId"),  rs.getInt("toUserId"), rs.getString("message"))));
@@ -63,5 +126,5 @@ public class Database {
     public boolean sendMessage(int fromUserId, int toUserId, String message) throws SQLException {
         String query = "INSERT INTO messages (fromUserId, toUserId, message) VALUES ("+fromUserId+", "+toUserId+", "+message+")";
         return jdbcTemplate.update(query) == 1;
-    }
+    }*/
 }

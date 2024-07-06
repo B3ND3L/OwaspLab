@@ -2,15 +2,27 @@
 
 namespace Renderer;
 
+use GuzzleHttp\Exception\GuzzleException;
+use Services\GameService;
 use Leaf\UI;
 use Leaf\UI\Component;
 
 class MainRender extends Component
 {
-  public $key = 'MainRender';
+    public $key = 'MainRender';
+    private $gameService;
+    public $games;
 
-  public function render()
-  {
-    return UI::view('views/main.html');
-  }
+    /**
+     * @throws GuzzleException
+     */
+    function setGames() {
+        $this->gameService = new GameService();
+        $this->games = $this->gameService->getAllGames();
+    }
+
+    public function render()
+    {
+        return UI::view('views/main.html');
+    }
 }

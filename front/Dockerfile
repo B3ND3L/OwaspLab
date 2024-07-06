@@ -14,16 +14,17 @@ RUN composer global require leafs/cli
 
 RUN ln -s /root/.composer/vendor/bin/leaf /usr/local/bin/leaf
 
-# If you have a custom PHP ini file you can uncomment this line
-# COPY ./php.ini /usr/local/etc/php/php.ini
+ADD webapp.conf /etc/php/8.3/fpm/pool.d/
 
 RUN apt-get purge -y g++ \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/* \
     && rm -rf /tmp/*
 
-WORKDIR /var/www
+COPY src/* /var/www/owaspLab/
 
-RUN chown -R www-data:www-data /var/www
+WORKDIR /var/www/owaspLab
 
-CMD ["php-fpm8"]
+RUN chown -R www-data:www-data /var/www/owaspLab
+
+CMD ["php-fpm", "--nodaemonize", "--fpm-config", "/etc/php/8.3/fpm/pool.d/webapp.conf"]

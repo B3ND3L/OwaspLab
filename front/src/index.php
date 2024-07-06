@@ -8,7 +8,9 @@ use Renderer\MainRender;
 $app = new Leaf\App;
 
 $app->match('GET', '/', function () {
-    return UI::render(new MainRender());
+    $render = new MainRender();
+    $render->setGames();
+    return UI::render($render);
 });
 
 $app->run();

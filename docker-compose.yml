@@ -3,12 +3,12 @@ version: '3.1'
 services:
 
   routing:
-    image: owasplab-nginx
+    image: owasplab-routing
     build: routing
     ports:
       - 80:80
     volumes:
-      - ./front/src:/usr/share/nginx/html
+      - ./routing/public:/usr/share/nginx/html
     links:
       - frontend
       - backend
